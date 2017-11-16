@@ -1,0 +1,49 @@
+;*
+;*----------------------------------------------------------------------------------------
+;*    IDE
+;*
+;*    Copyright (C) 2008-2013 by Dalian uLoong Co.,Ltd. All rights reserved.
+;*    
+;*    This program is open source software; developer can redistribute it and/or
+;*    modify it under the terms of the U-License as published by the Tenux Open Source
+;*    Society; either version 1 of the License, or (at developer option) any later 
+;*    Version.
+;*    
+;*    This program is distributed in the hope that it will be useful,but WITHOUT ANY 
+;*    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR 
+;*    A PARTICULAR PURPOSE.  See the U-License for more details.
+;*    
+;*    Developer should have received a copy of the U-License along with this program;
+;*    if not, download from www.tenux.org(the web page of the Tenux Open Source Society).
+;*
+;*    CPU:        STM32F103RB Compiled by KEIL RVMDK
+;*    RTOS:       uT/OS
+;*    Version:    2.0.00
+;*    Released by Tenux Open Source Society
+;*                  (http://www.tenux.org).
+;*
+;*    File Name      : uTenux-flash.sct
+;*    Create Date    : 2012/07/09-2017/11/02
+;*    Author         : Wangshb-Wangshb
+;*    Description    : flash Linker Scatter-Loading Description File .
+;*----------------------------------------------------------------------------------------
+;*/
+
+LOAD_INTERFLASHROM 0x08000000       0x00020000 { ; load region size_region
+  EXEC_INTERROM    0x08000000       0x00020000 { ; load address = execution address
+   * (.vector,+First)                            ;                            128k
+   *(InRoot$$Sections)
+   .ANY (+RO)
+  }
+  EXEC_VECTORRAM   0x20000000 EMPTY 0x00000130 { ; vector table region in ram 
+  }                                              ;                            0.3k
+  EXEC_BSSDATARAM  0x20000130       0x00001ed0 { ; zi and rw data region in ram 
+   .ANY (+RW +ZI) 
+  }                                              ;                            7.7k
+  EXEC_SYSTEMRAM   0x20002000       0x00002c00 { ; ut/OS management region 
+  }                                              ;                             11k
+  EXEC_USERRAM     0x20004c00       0x00000400 { ; user manual region in ram 
+  }                                              ;                              1k
+  EXEC_STACKRAM    0x20005000       0x00000000 { ; default stack top
+  }                                              ;                              0k
+}                                                ;                       sum:  20k
